@@ -56,7 +56,7 @@ echo y | .\Miniconda\Scripts\conda.exe install cudatoolkit==11.8.0 -c conda-forg
 echo y | .\Miniconda\Scripts\conda.exe install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda==11.8.0 -c pytorch -c nvidia
 
 git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git RVC
-git -C RVC checkout 937d748c672abbc49ea0f7f727f2760fc487f4ed
+git -C RVC checkout 46f42fff76017eb7f2d1e4f4632fcfc9d14dc1a6
 
 if exist ".\RVC\go-web_temporary.bat" del /f /q ".\RVC\go-web_temporary.bat"
 for /f "delims=: tokens=1,*" %%a in ('findstr /n .* ".\RVC\go-web.bat"') do (
