@@ -56,7 +56,7 @@ echo y | .\Miniconda\Scripts\conda.exe install cudatoolkit==11.8.0 -c conda-forg
 echo y | .\Miniconda\Scripts\conda.exe install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda==11.8.0 -c pytorch -c nvidia
 
 git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git RVC
-git -C RVC checkout 46f42fff76017eb7f2d1e4f4632fcfc9d14dc1a6
+git -C RVC checkout 9f2f0559e6932c10c48642d404e7d2e771d9db43
 
 if exist ".\RVC\go-web_temporary.bat" del /f /q ".\RVC\go-web_temporary.bat"
 for /f "delims=: tokens=1,*" %%a in ('findstr /n .* ".\RVC\go-web.bat"') do (
@@ -78,6 +78,32 @@ for /f "delims=: tokens=1,*" %%a in ('findstr /n .* ".\RVC\go-realtime-gui.bat"'
 )
 move /y ".\RVC\go-realtime-gui_temporary.bat" ".\RVC\go-realtime-gui.bat"
 
+if exist ".\RVC\infer\modules\uvr5\modules_temp.py" del /f /q ".\RVC\infer\modules\uvr5\modules_temp.py"
+for /f "delims=: tokens=1,*" %%a in ('findstr /n .* ".\RVC\infer\modules\uvr5\modules.py"') do (
+    if "%%a"=="1" (
+        echo.%%b>>".\RVC\infer\modules\uvr5\modules_temp.py"
+        echo.import shutil>>".\RVC\infer\modules\uvr5\modules_temp.py"
+    ) else if "%%a"=="44" (
+        echo.%%b>>".\RVC\infer\modules\uvr5\modules_temp.py"
+        (
+            echo             shutil.move^(inp_path, os.path.abspath^(^"./") + "/TEMP/" + os.path.basename(inp_path) + ".reformatted.wav")
+        ) >".\RVC\infer\modules\uvr5\line_temp.txt"
+        type ".\RVC\infer\modules\uvr5\line_temp.txt" >>".\RVC\infer\modules\uvr5\modules_temp.py"
+    ) else if "%%a"=="73" (
+        echo.                    pre_fun._path_audio_(>>".\RVC\infer\modules\uvr5\modules_temp.py"
+    ) else if "%%a"=="94" (
+        echo.%%b>>".\RVC\infer\modules\uvr5\modules_temp.py"
+        (
+            echo         os.remove^(os.path.abspath^(^"./") + "/TEMP/" + os.path.basename(inp_path))
+        ) >".\RVC\infer\modules\uvr5\line_temp.txt"
+        type ".\RVC\infer\modules\uvr5\line_temp.txt" >>".\RVC\infer\modules\uvr5\modules_temp.py"
+    ) else (
+        echo.%%b>>".\RVC\infer\modules\uvr5\modules_temp.py"
+    )
+)
+move /y ".\RVC\infer\modules\uvr5\modules_temp.py" ".\RVC\infer\modules\uvr5\modules.py"
+if exist ".\RVC\infer\modules\uvr5\line_temp.txt" del /f /q ".\RVC\infer\modules\uvr5\line_temp.txt"
+
 echo y | pip install -r ".\RVC\requirements.txt"
 echo y | pip install -r ".\RVC\requirements-win-for-realtime_vc_gui.txt"
 
@@ -96,8 +122,6 @@ bitsadmin /transfer "Download 'f0G32k.pth'" /download /priority normal "https://
 bitsadmin /transfer "Download 'f0G40k.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/pretrained/f0G40k.pth" "%~dp0\RVC\assets\pretrained\f0G40k.pth"
 bitsadmin /transfer "Download 'f0G48k.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/pretrained/f0G48k.pth" "%~dp0\RVC\assets\pretrained\f0G48k.pth"
 
-mkdir ".\RVC\assets\uvr5_weights\onnx_dereverb_By_FoxJoy"
-bitsadmin /transfer "Download 'vocals.onnx'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/uvr5_weights/onnx_dereverb_By_FoxJoy/vocals.onnx" "%~dp0\RVC\assets\uvr5_weights\onnx_dereverb_By_FoxJoy\vocals.onnx"
 bitsadmin /transfer "Download 'HP2-人声vocals+非人声instrumentals.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/uvr5_weights/HP2-%E4%BA%BA%E5%A3%B0vocals%2B%E9%9D%9E%E4%BA%BA%E5%A3%B0instrumentals.pth" "%~dp0\RVC\assets\uvr5_weights\HP2-人声vocals+非人声instrumentals.pth"
 bitsadmin /transfer "Download 'HP2_all_vocals.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/uvr5_weights/HP2_all_vocals.pth" "%~dp0\RVC\assets\uvr5_weights\HP2_all_vocals.pth"
 bitsadmin /transfer "Download 'HP3_all_vocals.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/uvr5_weights/HP3_all_vocals.pth" "%~dp0\RVC\assets\uvr5_weights\HP3_all_vocals.pth"
@@ -120,11 +144,9 @@ bitsadmin /transfer "Download 'f0G32k.pth'" /download /priority normal "https://
 bitsadmin /transfer "Download 'f0G40k.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/pretrained_v2/f0G40k.pth" "%~dp0\RVC\assets\pretrained_v2\f0G40k.pth"
 bitsadmin /transfer "Download 'f0G48k.pth'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/pretrained_v2/f0G48k.pth" "%~dp0\RVC\assets\pretrained_v2\f0G48k.pth"
 
-mkdir ".\RVC\ffmpeg"
-bitsadmin /transfer "Download 'ffmpeg.exe'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/ffmpeg.exe" "%~dp0\RVC\ffmpeg\ffmpeg.exe"
+bitsadmin /transfer "Download 'ffmpeg.exe'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/ffmpeg.exe" "%~dp0\RVC\ffmpeg.exe"
 
-mkdir ".\RVC\ffprobe"
-bitsadmin /transfer "Download 'ffprobe.exe'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/ffprobe.exe" "%~dp0\RVC\ffprobe\ffprobe.exe"
+bitsadmin /transfer "Download 'ffprobe.exe'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/ffprobe.exe" "%~dp0\RVC\ffprobe.exe"
 
 bitsadmin /transfer "Download 'rmvpe.pt'" /download /priority normal "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/rmvpe.pt" "%~dp0\RVC\assets\rmvpe\rmvpe.pt"
 
